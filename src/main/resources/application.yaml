@@ -1,0 +1,12 @@
+spring:
+  session:
+    jdbc:
+      initialize-schema: embedded
+  datasource:
+    url: jdbc:postgresql://localhost:5432/Weather
+    username: postgres
+    password: 12314
+server:
+  servlet:
+    session:
+      timeout: 30m
