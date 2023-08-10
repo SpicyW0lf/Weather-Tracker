@@ -1,4 +1,8 @@
 spring:
+  security:
+    user:
+      name: user
+      password: 1234
   session:
     jdbc:
       initialize-schema: embedded
@@ -6,6 +10,7 @@ spring:
     url: jdbc:postgresql://localhost:5432/Weather
     username: postgres
     password: 12314
+    driver-class-name: org.postgresql.Driver
 server:
   servlet:
     session:
