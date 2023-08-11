@@ -1,16 +1,24 @@
 spring:
+  jpa:
+    properties:
+      hibernate:
+        dialect: org.hibernate.dialect.PostgreSQLDialect
+    hibernate:
+      ddl-auto: update
   security:
     user:
       name: user
       password: 1234
   session:
     jdbc:
-      initialize-schema: embedded
+      table-name: spring_session
+      initialize-schema: always
   datasource:
     url: jdbc:postgresql://localhost:5432/Weather
     username: postgres
     password: 12314
     driver-class-name: org.postgresql.Driver
+
 server:
   servlet:
     session:
