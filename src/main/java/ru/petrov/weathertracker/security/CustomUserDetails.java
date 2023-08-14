@@ -2,16 +2,25 @@ package ru.petrov.weathertracker.security;
 
 import lombok.AllArgsConstructor;
 import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
+import ru.petrov.weathertracker.models.User;
 
 import java.util.Collection;
+import java.util.List;
 
-@AllArgsConstructor
+
 public class CustomUserDetails implements UserDetails {
 
     private Collection<? extends GrantedAuthority> authorities;
     private String password;
     private String username;
+
+    public CustomUserDetails(User user) {
+        this.username = user.getUsername();
+        this.password = user.getPassword();
+        this.authorities = List.of(new SimpleGrantedAuthority("USER"));
+    }
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {

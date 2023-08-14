@@ -13,6 +13,7 @@ import ru.petrov.weathertracker.security.CustomUserDetails;
 
 import java.util.Collection;
 import java.util.List;
+import java.util.Optional;
 
 @Service
 @AllArgsConstructor
@@ -22,17 +23,10 @@ public class CustomUserDetailsService implements UserDetailsService {
 
     @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
-        User user = userRepository.findByUsername(username)
+        Optional<User> user = userRepository.findByUsername(username);
+
+        return user.map(CustomUserDetails::new)
                 .orElseThrow(() -> new UsernameNotFoundException("User not found"));
-
-        return new CustomUserDetails(
-                authorities(),
-                user.getPassword(),
-                user.getUsername()
-        );
     }
 
-    private Collection<? extends GrantedAuthority> authorities() {
-        return List.of(new SimpleGrantedAuthority("USER"));
-    }
 }
