@@ -1,6 +1,8 @@
 package ru.petrov.weathertracker.controllers;
 
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
 
@@ -10,7 +12,7 @@ import java.util.LinkedList;
 public class FirstController {
 
     @GetMapping("/home")
-    public ResponseEntity<?> hello() {
-        return ResponseEntity.ok(200);
+    public ResponseEntity<String> hello() {
+        return ResponseEntity.ok("Привет");
     }
 }
