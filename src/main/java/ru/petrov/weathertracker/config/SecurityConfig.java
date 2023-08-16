@@ -27,8 +27,10 @@ public class SecurityConfig {
                 .csrf(AbstractHttpConfigurer::disable)
                 .authorizeHttpRequests(authorize -> authorize
                         .requestMatchers("/register").permitAll()
-                        .anyRequest()
-                        .authenticated())
+                                .anyRequest().permitAll()
+                        //.anyRequest()
+                        //.authenticated()
+                )
                 .formLogin(form -> form.defaultSuccessUrl("/home", true))
                 .sessionManagement(session -> session
                         .sessionCreationPolicy(SessionCreationPolicy.ALWAYS)
