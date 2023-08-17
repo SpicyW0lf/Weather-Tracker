@@ -5,9 +5,11 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import ru.petrov.weathertracker.models.Location;
 
-@AllArgsConstructor
+
 @NoArgsConstructor
+@AllArgsConstructor
 @Data
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class LocationDTO {
@@ -17,4 +19,13 @@ public class LocationDTO {
     @JsonProperty("lon")
     private Double longitude;
     private String country;
+
+    public Location toLocation() {
+        return new Location(
+                this.name,
+                this.latitude,
+                this.longitude,
+                this.country
+        );
+    }
 }
