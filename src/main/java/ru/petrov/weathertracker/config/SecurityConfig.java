@@ -27,11 +27,11 @@ public class SecurityConfig {
                 .csrf(AbstractHttpConfigurer::disable)
                 .authorizeHttpRequests(authorize -> authorize
                         .requestMatchers("/register").permitAll()
-                                .anyRequest().permitAll()
-                        //.anyRequest()
-                        //.authenticated()
+                        .anyRequest()
+                        .authenticated()
                 )
-                .formLogin(form -> form.defaultSuccessUrl("/home", true))
+                .httpBasic(Customizer.withDefaults())
+                //.formLogin(form -> form.defaultSuccessUrl("/home", true))
                 .sessionManagement(session -> session
                         .sessionCreationPolicy(SessionCreationPolicy.ALWAYS)
                         .invalidSessionUrl("/logout?expired")

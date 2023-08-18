@@ -10,6 +10,7 @@ import ru.petrov.weathertracker.services.WeatherService;
 
 import java.io.IOException;
 import java.net.URISyntaxException;
+import java.security.Principal;
 import java.util.Set;
 
 @Controller
@@ -28,10 +29,17 @@ public class WeatherController {
 
     @GetMapping("/user-locations")
     @ResponseBody
-    public ResponseEntity<Set<LocationDTO>> getUserLocations() {
-        Set<LocationDTO> locations = weatherService.findAll();
+    public ResponseEntity<Set<LocationDTO>> getUserLocations(Principal principal) {
+        Set<LocationDTO> locations = weatherService.findUserLocs(principal.getName());
 
         return new ResponseEntity<>(locations, HttpStatus.OK);
+    }
+
+    @PostMapping("/locations/{id}")
+    public String addLocation(@PathVariable("id") int locId, Principal principal) {
+        weatherService.saveLocToUser(principal.getName(), locId);
+
+        return "redirect:/user-locations";
     }
 
     @PostMapping("/locations")

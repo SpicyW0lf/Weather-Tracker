@@ -1,17 +1,18 @@
 package ru.petrov.weathertracker.models;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
-import lombok.Data;
-import lombok.NoArgsConstructor;
-import lombok.RequiredArgsConstructor;
+import lombok.*;
 import ru.petrov.weathertracker.DTO.LocationDTO;
 
+import java.util.HashSet;
 import java.util.Set;
 
 @Entity
 @Table(name = "locations")
-@Data
+@Getter
+@Setter
 @NoArgsConstructor
 @AllArgsConstructor
 public class Location {
@@ -27,8 +28,13 @@ public class Location {
     private Double longitude;
     @Column(name = "country")
     private String country;
-    @ManyToMany(mappedBy = "locations")
-    private Set<User> users;
+    @ManyToMany(
+            cascade = CascadeType.ALL,
+            mappedBy = "locations",
+            fetch = FetchType.EAGER
+    )
+    @JsonIgnore
+    private Set<User> users = new HashSet<>();
 
     public Location(String name, Double latitude, Double longitude, String country) {
         this.name = name;
