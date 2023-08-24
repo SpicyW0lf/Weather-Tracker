@@ -8,6 +8,7 @@ class WeatherTrackerApplicationTests {
 
     @Test
     void contextLoads() {
+
     }
 
 }
