@@ -27,19 +27,23 @@ public class SecurityConfig {
                 .csrf(AbstractHttpConfigurer::disable)
                 .authorizeHttpRequests(authorize -> authorize
                         .requestMatchers("/register").permitAll()
-                        .anyRequest()
-                        .authenticated()
+                        .anyRequest().authenticated()
                 )
-                .httpBasic(Customizer.withDefaults())
-                //.formLogin(form -> form.defaultSuccessUrl("/home", true))
+                //.httpBasic(Customizer.withDefaults())
+                .formLogin(form -> form
+                        .loginPage("/login").permitAll()
+                        .defaultSuccessUrl("/home", true)
+                )
                 .sessionManagement(session -> session
                         .sessionCreationPolicy(SessionCreationPolicy.ALWAYS)
                         .invalidSessionUrl("/logout?expired")
                         .maximumSessions(5)
                         .maxSessionsPreventsLogin(false))
                 .logout(logout -> logout
+                        .permitAll()
                         .deleteCookies("JSESSIONID")
-                        .invalidateHttpSession(true))
+                        .invalidateHttpSession(true)
+                )
                 .build();
     }
 

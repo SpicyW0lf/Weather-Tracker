@@ -43,9 +43,7 @@ public class WeatherService {
                 .build();
         HttpResponse<String> response = httpClient.send(request, HttpResponse.BodyHandlers.ofString());
 
-        Set<LocationDTO> locations = objectMapper.readValue(response.body(), new TypeReference<>(){});
-
-        return locations;
+        return objectMapper.readValue(response.body(), new TypeReference<>(){});
     }
 
     public void saveLocation(LocationDTO locationDTO) {
@@ -72,15 +70,13 @@ public class WeatherService {
     }
 
     public void saveLocToUser(String username, int locId) throws UsernameNotFoundException {
-        Set<Location> locs;
-        Set<User> users;
         User user = userRepository.findByUsername(username)
                 .orElseThrow(() -> new UsernameNotFoundException("User not found"));
         Location location = locationRepository.findById(locId)
                 .orElseThrow(() -> new NoSuchElementException("Location not found"));
 
-        locs = user.getLocations();
-        users = location.getUsers();
+        Set<Location> locs = user.getLocations();
+        Set<User> users = location.getUsers();
         locs.add(location);
         users.add(user);
         user.setLocations(locs);

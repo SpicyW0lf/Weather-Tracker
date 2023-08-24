@@ -1,4 +1,4 @@
-package ru.petrov.weathertracker.services;
+package ru.petrov.weathertracker.security;
 
 import lombok.AllArgsConstructor;
 import org.springframework.security.core.GrantedAuthority;

@@ -3,6 +3,7 @@ package ru.petrov.weathertracker.DTO;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import ru.petrov.weathertracker.models.User;
 
 
 @Data
@@ -11,4 +12,8 @@ import lombok.NoArgsConstructor;
 public class UserDTO {
     private String username;
     private String password;
+
+    public User toUser() {
+        return new User(username, password);
+    }
 }

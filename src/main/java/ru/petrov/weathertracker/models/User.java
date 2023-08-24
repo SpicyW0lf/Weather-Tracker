@@ -35,4 +35,13 @@ public class User {
     @JsonIgnore
     private Set<Location> locations = new HashSet<>();
 
+    public User(String username, String password) {
+        this.username = username;
+        this.password = password;
+    }
+
+    @Override
+    public String toString() {
+        return "Name: " + username + "\nPassword: " + password;
+    }
 }
