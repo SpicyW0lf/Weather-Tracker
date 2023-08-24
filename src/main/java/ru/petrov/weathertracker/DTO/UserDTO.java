@@ -12,8 +12,4 @@ import ru.petrov.weathertracker.models.User;
 public class UserDTO {
     private String username;
     private String password;
-
-    public User toUser() {
-        return new User(username, password);
-    }
 }

@@ -33,7 +33,7 @@ public class AuthController {
             return "register";
         }
 
-        return "redirect::/login";
+        return "redirect:/login";
     }
 
     @GetMapping("/login")
