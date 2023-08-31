@@ -12,6 +12,7 @@ import ru.petrov.weathertracker.services.WeatherService;
 import java.io.IOException;
 import java.net.URISyntaxException;
 import java.util.Set;
+import java.util.Vector;
 
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.doReturn;
