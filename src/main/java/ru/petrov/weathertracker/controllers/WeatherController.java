@@ -4,9 +4,9 @@ import lombok.AllArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
-import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 import ru.petrov.weathertracker.DTO.LocationDTO;
+import ru.petrov.weathertracker.DTO.weatherView.LocationView;
 import ru.petrov.weathertracker.services.WeatherService;
 
 import java.io.IOException;
@@ -28,10 +28,17 @@ public class WeatherController {
         return new ResponseEntity<>(locations, HttpStatus.OK);
     }
 
-    @GetMapping("/user-locations")
-    @ResponseBody
+    @GetMapping("/main")
     public ResponseEntity<Set<LocationDTO>> getUserLocations(Principal principal) {
         Set<LocationDTO> locations = weatherService.findUserLocs(principal.getName());
+
+        return new ResponseEntity<>(locations, HttpStatus.OK);
+    }
+
+    @GetMapping("/test-locs")
+    @ResponseBody
+    public ResponseEntity<LocationView> getTestLocs() throws URISyntaxException, IOException, InterruptedException {
+        LocationView locations = weatherService.getWeather();
 
         return new ResponseEntity<>(locations, HttpStatus.OK);
     }

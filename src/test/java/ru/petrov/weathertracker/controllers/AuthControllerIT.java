@@ -37,7 +37,7 @@ class AuthControllerIT {
     @Autowired
     UserRepository userRepository;
 
-    static PostgreSQLContainer<?> postgres= new PostgreSQLContainer<>(
+    static PostgreSQLContainer<?> postgres = new PostgreSQLContainer<>(
             "postgres:15-alpine"
     );
 
@@ -66,10 +66,10 @@ class AuthControllerIT {
     @Test
     void addUser_shouldCreateNewUser() throws Exception {
         this.mockMvc.perform(
-                post("/register")
-                        .param("username", "Dima")
-                        .param("password", "1234")
-        )
+                        post("/register")
+                                .param("username", "Dima")
+                                .param("password", "1234")
+                )
                 .andExpect(redirectedUrl("/login"));
     }
 

@@ -2,26 +2,19 @@ package ru.petrov.weathertracker.services;
 
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import lombok.AllArgsConstructor;
 import lombok.RequiredArgsConstructor;
-import org.hibernate.Hibernate;
-import org.springframework.beans.factory.annotation.Value;
-import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 import ru.petrov.weathertracker.DTO.LocationDTO;
+import ru.petrov.weathertracker.DTO.weatherView.LocationView;
 import ru.petrov.weathertracker.models.Location;
 import ru.petrov.weathertracker.models.User;
 import ru.petrov.weathertracker.repositories.LocationRepository;
 import ru.petrov.weathertracker.repositories.UserRepository;
+import ru.petrov.weathertracker.utils.OpenAPIClient;
 
 import java.io.IOException;
-import java.lang.reflect.Type;
-import java.net.URI;
 import java.net.URISyntaxException;
-import java.net.http.HttpClient;
-import java.net.http.HttpRequest;
-import java.net.http.HttpResponse;
 import java.util.*;
 import java.util.stream.Collectors;
 
@@ -30,20 +23,14 @@ import java.util.stream.Collectors;
 public class WeatherService {
 
     private final ObjectMapper objectMapper = new ObjectMapper();
-    @Value("${weather.key}")
-    private String apiKey;
+
     private final LocationRepository locationRepository;
     private final UserRepository userRepository;
+    private final OpenAPIClient httpOpenAPIClient;
 
     public Set<LocationDTO> findLocations(String name) throws URISyntaxException, IOException, InterruptedException {
-        HttpClient httpClient = HttpClient.newHttpClient();
-        HttpRequest request = HttpRequest.newBuilder()
-                .uri(new URI(String.format("http://api.openweathermap.org/geo/1.0/direct?q=%s&limit=5&appid=%s", name, apiKey)))
-                .GET()
-                .build();
-        HttpResponse<String> response = httpClient.send(request, HttpResponse.BodyHandlers.ofString());
-
-        return objectMapper.readValue(response.body(), new TypeReference<>(){});
+        return objectMapper.readValue(httpOpenAPIClient.findLocationsByName(name), new TypeReference<>() {
+        });
     }
 
     public void saveLocation(LocationDTO locationDTO) {
@@ -52,6 +39,15 @@ public class WeatherService {
         }
 
         locationRepository.save(locationDTO.toLocation());
+    }
+
+    public LocationView getWeather() throws URISyntaxException, IOException, InterruptedException {
+        LocationView locs = objectMapper.readValue(
+                httpOpenAPIClient.findLocationByLL(1.0, 3.0),
+                LocationView.class
+        );
+
+        return locs;
     }
 
     public Set<LocationDTO> findAll() {
