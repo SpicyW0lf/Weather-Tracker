@@ -45,6 +45,7 @@ public class Location {
 
     public LocationDTO toDto() {
         return new LocationDTO(
+                this.id,
                 this.name,
                 this.latitude,
                 this.longitude,

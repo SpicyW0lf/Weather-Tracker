@@ -41,13 +41,17 @@ public class WeatherService {
         locationRepository.save(locationDTO.toLocation());
     }
 
-    public LocationView getWeather() throws URISyntaxException, IOException, InterruptedException {
-        LocationView locs = objectMapper.readValue(
-                httpOpenAPIClient.findLocationByLL(1.0, 3.0),
-                LocationView.class
-        );
+    public LocationView getWeather(Double latitude, Double longitude) {
+        try {
+            LocationView locs = objectMapper.readValue(
+                    httpOpenAPIClient.findLocationByLL(1.0, 3.0),
+                    LocationView.class
+            );
 
-        return locs;
+            return locs;
+        } catch (Exception ex) {
+            return null;
+        }
     }
 
     public Set<LocationDTO> findAll() {
@@ -56,12 +60,19 @@ public class WeatherService {
                 .collect(Collectors.toSet());
     }
 
-    public Set<LocationDTO> findUserLocs(String username) {
+    public Set<LocationView> findUserLocs(String username)  {
         User user = userRepository.findByUsername(username)
                 .orElseThrow(() -> new UsernameNotFoundException("User not found"));
-
-        return user.getLocations().stream()
+        Set<LocationDTO> userLocs = user.getLocations().stream()
                 .map(Location::toDto)
+                .collect(Collectors.toSet());
+
+        return userLocs.stream()
+                .map((loc) -> {
+                    LocationView view = getWeather(loc.getLatitude(), loc.getLongitude());
+                    view.setId(loc.getId());
+                    return view;
+                })
                 .collect(Collectors.toSet());
     }
 
@@ -70,13 +81,14 @@ public class WeatherService {
                 .orElseThrow(() -> new UsernameNotFoundException("User not found"));
         Location location = locationRepository.findById(locId)
                 .orElseThrow(() -> new NoSuchElementException("Location not found"));
-
         Set<Location> locs = user.getLocations();
         Set<User> users = location.getUsers();
+
         locs.add(location);
         users.add(user);
         user.setLocations(locs);
         location.setUsers(users);
+
         userRepository.save(user);
         locationRepository.save(location);
     }

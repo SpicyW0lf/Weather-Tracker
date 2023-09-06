@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Главная страница</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.1/dist/css/bootstrap.min.css" rel="stylesheet"
+          integrity="sha384-4bw+/aepP/YC94hEpVNVgiZdgIC5+VKNBQNGCHeKRQN+PtmoHDEXuppvnDJzQIu9" crossorigin="anonymous">
+</head>
+<body>
+<nav class="navbar navbar-expand-lg bg-body-tertiary">
+    <div class="container-fluid">
+        <a class="navbar-brand" th:href="@{/main}">Weather Tracker</a>
+        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent"
+                aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="collapse navbar-collapse" id="navbarSupportedContent">
+            <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+            </ul>
+            <a class="nav-link disabled me-4" aria-disabled="true" th:text="${username}"/>
+            <a th:href="@{/logout}">
+                <button class="btn btn-outline-success">Logout</button>
+            </a>
+        </div>
+    </div>
+</nav>
+<div class="position-absolute start-50 translate-middle mt-4" style="width: 500px">
+    <form th:action="@{/del-loc}">
+        <input type="text" class="w-auto" placeholder="Введите название города" name="city">
+        <input class="btn btn-success ms-2 w-auto" type="submit" value="Найти">
+    </form>
+</div>
+<p class="position-absolute top-50 start-50 translate-middle" th:if="${locations.size()} == 0">У вас нет сохраненных
+    локаций, добавьте парочку!</p>
+<div class="d-inline-flex mt-4 w-auto">
+    <div th:each="location : ${locations}">
+        <div class="card ms-4 mt-4" style="width: 18rem;">
+            <div class="card-body">
+                <h5 class="card-title" th:text="${location.getName()}"></h5>
+                <p class="card-text"><i>Погода:</i> <span th:text="${location.getWeather().get(0).getMain()}"></span>
+                </p>
+                <p class="card-text"><i>Температура: </i> <span th:text="${location.getMain().getTemp()}"></span></p>
+                <p class="card-text"><i>Скорость ветра: </i> <span th:text="${location.getWind().getSpeed()}"></span>
+                    м.с.</p>
+                <a th:href="@{/delete-loc/{locId}(locId=${location.getId()})}">
+                    <button class="btn btn-success">Удалить локацию</button>
+                </a>
+            </div>
+        </div>
+    </div>
+</div>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.1/dist/js/bootstrap.bundle.min.js"
+        integrity="sha384-HwwvtgBNo3bZJJLYd8oVXjrBZt8cqVSpeBNS5n7C8IVInixGAoxmnlMuBnhbgrkm"
+        crossorigin="anonymous"></script>
+</body>
+</html>

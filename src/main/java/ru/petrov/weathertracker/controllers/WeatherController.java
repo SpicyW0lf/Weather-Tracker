@@ -4,14 +4,19 @@ import lombok.AllArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 import ru.petrov.weathertracker.DTO.LocationDTO;
 import ru.petrov.weathertracker.DTO.weatherView.LocationView;
+import ru.petrov.weathertracker.DTO.weatherView.Main;
+import ru.petrov.weathertracker.DTO.weatherView.Weather;
+import ru.petrov.weathertracker.DTO.weatherView.Wind;
 import ru.petrov.weathertracker.services.WeatherService;
 
 import java.io.IOException;
 import java.net.URISyntaxException;
 import java.security.Principal;
+import java.util.ArrayList;
 import java.util.Set;
 
 @Controller
@@ -29,18 +34,26 @@ public class WeatherController {
     }
 
     @GetMapping("/main")
-    public ResponseEntity<Set<LocationDTO>> getUserLocations(Principal principal) {
-        Set<LocationDTO> locations = weatherService.findUserLocs(principal.getName());
+    public String getUserLocations(Principal principal, Model model) {
+        Set<LocationView> locations = weatherService.findUserLocs(principal.getName());
+        locations.add(new LocationView(
+                1,
+                new ArrayList<Weather>(){{add(new Weather("Clouds"));}},
+                new Main(25.0),
+                new Wind(3.25),
+                "Moscow"
+        ));
+        locations.add(new LocationView(
+                2,
+                new ArrayList<Weather>(){{add(new Weather("Clouds"));}},
+                new Main(25.0),
+                new Wind(3.25),
+                "Moscow"
+        ));
+        model.addAttribute("locations", locations);
+        model.addAttribute("username", principal.getName());
 
-        return new ResponseEntity<>(locations, HttpStatus.OK);
-    }
-
-    @GetMapping("/test-locs")
-    @ResponseBody
-    public ResponseEntity<LocationView> getTestLocs() throws URISyntaxException, IOException, InterruptedException {
-        LocationView locations = weatherService.getWeather();
-
-        return new ResponseEntity<>(locations, HttpStatus.OK);
+        return "main";
     }
 
     @PostMapping("/locations/{id}")

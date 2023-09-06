@@ -1,5 +1,6 @@
 package ru.petrov.weathertracker.DTO;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.AllArgsConstructor;
@@ -13,6 +14,8 @@ import ru.petrov.weathertracker.models.Location;
 @Data
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class LocationDTO {
+    @JsonIgnore
+    private Integer id;
     private String name;
     @JsonProperty("lat")
     private Double latitude;
