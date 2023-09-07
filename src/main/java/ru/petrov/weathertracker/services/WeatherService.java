@@ -29,8 +29,10 @@ public class WeatherService {
     private final OpenAPIClient httpOpenAPIClient;
 
     public Set<LocationDTO> findLocations(String name) throws URISyntaxException, IOException, InterruptedException {
-        return objectMapper.readValue(httpOpenAPIClient.findLocationsByName(name), new TypeReference<>() {
+        Set<LocationDTO> locations = objectMapper.readValue(httpOpenAPIClient.findLocationsByName(name), new TypeReference<>() {
         });
+
+        return locations;
     }
 
     public void saveLocation(LocationDTO locationDTO) {
@@ -44,7 +46,7 @@ public class WeatherService {
     public LocationView getWeather(Double latitude, Double longitude) {
         try {
             LocationView locs = objectMapper.readValue(
-                    httpOpenAPIClient.findLocationByLL(1.0, 3.0),
+                    httpOpenAPIClient.findLocationByLL(latitude, longitude),
                     LocationView.class
             );
 
@@ -54,26 +56,14 @@ public class WeatherService {
         }
     }
 
-    public Set<LocationDTO> findAll() {
-        return locationRepository.findAll().stream()
-                .map(Location::toDto)
-                .collect(Collectors.toSet());
-    }
-
-    public Set<LocationView> findUserLocs(String username)  {
+    public Set<LocationDTO> findUserLocs(String username)  {
         User user = userRepository.findByUsername(username)
                 .orElseThrow(() -> new UsernameNotFoundException("User not found"));
         Set<LocationDTO> userLocs = user.getLocations().stream()
                 .map(Location::toDto)
                 .collect(Collectors.toSet());
 
-        return userLocs.stream()
-                .map((loc) -> {
-                    LocationView view = getWeather(loc.getLatitude(), loc.getLongitude());
-                    view.setId(loc.getId());
-                    return view;
-                })
-                .collect(Collectors.toSet());
+        return userLocs;
     }
 
     public void saveLocToUser(String username, int locId) throws UsernameNotFoundException {

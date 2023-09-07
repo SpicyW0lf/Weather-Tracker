@@ -26,14 +26,17 @@
     </div>
 </nav>
 <div class="position-absolute start-50 translate-middle mt-4" style="width: 500px">
-    <form th:action="@{/del-loc}">
-        <input type="text" class="w-auto" placeholder="Введите название города" name="city">
-        <input class="btn btn-success ms-2 w-auto" type="submit" value="Найти">
+    <form th:action="@{/main}" class="w-auto">
+        <input type="text" placeholder="Введите название города" name="city">
+        <input class="btn btn-success ms-2" type="submit" value="Найти">
     </form>
 </div>
-<p class="position-absolute top-50 start-50 translate-middle" th:if="${locations.size()} == 0">У вас нет сохраненных
+<p class="position-absolute top-50 start-50 translate-middle" th:if="${locations.size()} == 0 and ${city} == null">У вас
+    нет сохраненных
     локаций, добавьте парочку!</p>
-<div class="d-inline-flex mt-4 w-auto">
+<p class="position-absolute top-50 start-50 translate-middle" th:if="${locationsFound.size()} == 0 and ${city} != null">
+    Локаций с таким названием не сущетсвует!</p>
+<div class="d-inline-flex mt-4 w-auto" th:if="${city} == null">
     <div th:each="location : ${locations}">
         <div class="card ms-4 mt-4" style="width: 18rem;">
             <div class="card-body">
@@ -46,6 +49,24 @@
                 <a th:href="@{/delete-loc/{locId}(locId=${location.getId()})}">
                     <button class="btn btn-success">Удалить локацию</button>
                 </a>
+            </div>
+        </div>
+    </div>
+</div>
+<div class="d-inline-flex mt-4 w-auto" th:if="${city} != null">
+    <div th:each="location : ${locationsFound}">
+        <div class="card ms-4 mt-4" style="width: 18rem;">
+            <div class="card-body">
+                <h5 class="card-title" th:text="${location.getName()}"></h5>
+                <p class="card-text"><i>Страна:</i> <span th:text="${location.getCountry()}"></span>
+                </p>
+                <p class="card-text"><i>Широта: </i> <span th:text="${location.getLatitude()}"></span></p>
+                <p class="card-text"><i>Долгота: </i> <span th:text="${location.getLongitude()}"></span></p>
+                <form th:action="@{/add-loc}" method="POST">
+                    <input hidden type="text" th:value="${location.getLatitude()}" name="latitude" >
+                    <input hidden type="text" th:value="${location.getLongitude()}" name="longitude" >
+                    <input type="submit" class="btn btn-success" value="Добавить локацию">
+                </form>
             </div>
         </div>
     </div>

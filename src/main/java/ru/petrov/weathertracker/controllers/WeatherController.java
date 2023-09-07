@@ -17,7 +17,9 @@ import java.io.IOException;
 import java.net.URISyntaxException;
 import java.security.Principal;
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 @Controller
 @AllArgsConstructor
@@ -34,8 +36,22 @@ public class WeatherController {
     }
 
     @GetMapping("/main")
-    public String getUserLocations(Principal principal, Model model) {
-        Set<LocationView> locations = weatherService.findUserLocs(principal.getName());
+    public String mainPage(Principal principal, Model model, @RequestParam(required = false) String city) throws URISyntaxException, IOException, InterruptedException {
+        Set<LocationDTO> locationsFound = new HashSet<>();
+        Set<LocationView> locations = new HashSet<>();
+
+        if (city == null) {
+            locations = weatherService.findUserLocs(principal.getName()).stream()
+                    .map((loc) -> {
+                        LocationView view = weatherService.getWeather(loc.getLatitude(), loc.getLongitude());
+                        view.setId(loc.getId());
+                        return view;
+                    })
+                    .collect(Collectors.toSet());
+        } else {
+            locationsFound = weatherService.findLocations(city);
+        }
+
         locations.add(new LocationView(
                 1,
                 new ArrayList<Weather>(){{add(new Weather("Clouds"));}},
@@ -50,17 +66,23 @@ public class WeatherController {
                 new Wind(3.25),
                 "Moscow"
         ));
+
         model.addAttribute("locations", locations);
         model.addAttribute("username", principal.getName());
+        model.addAttribute("locationsFound", locationsFound);
+        model.addAttribute("city", city);
+        model.addAttribute("newLocation", new LocationDTO());
 
         return "main";
     }
 
-    @PostMapping("/locations/{id}")
-    public String addLocation(@PathVariable("id") int locId, Principal principal) {
-        weatherService.saveLocToUser(principal.getName(), locId);
+    @PostMapping("/add-loc")
+    public String addLocation(Double latitude, Double longitude, Principal principal) {
+        System.out.println(latitude);
+        System.out.println(longitude);
+        //weatherService.saveLocToUser(principal.getName(), locId);
 
-        return "redirect:/user-locations";
+        return "redirect:/main";
     }
 
     @PostMapping("/locations")
