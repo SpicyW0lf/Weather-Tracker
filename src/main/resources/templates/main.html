@@ -65,6 +65,9 @@
                 <form th:action="@{/add-loc}" method="POST">
                     <input hidden type="text" th:value="${location.getLatitude()}" name="latitude" >
                     <input hidden type="text" th:value="${location.getLongitude()}" name="longitude" >
+                    <input hidden type="text" th:value="${location.getCountry()}" name="country">
+                    <input hidden type="text" th:value="${location.getName()}" name="name" >
+                    <input hidden type="text" th:value="${location.getId()}" name="id" >
                     <input type="submit" class="btn btn-success" value="Добавить локацию">
                 </form>
             </div>

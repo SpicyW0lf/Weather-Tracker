@@ -35,24 +35,24 @@ public class WeatherService {
         return locations;
     }
 
-    public void saveLocation(LocationDTO locationDTO) {
-        if (locationRepository.existsLocationByLatitudeAndLongitude(locationDTO.getLatitude(), locationDTO.getLongitude())) {
+    public Location saveLocation(LocationDTO locationDTO) {
+        if (locationRepository.findLocationByLatitudeAndLongitude(locationDTO.getLatitude(), locationDTO.getLongitude()).isPresent()) {
             throw new IllegalArgumentException("This location is already added");
         }
 
-        locationRepository.save(locationDTO.toLocation());
+        return locationRepository.save(locationDTO.toLocation());
     }
 
-    public LocationView getWeather(Double latitude, Double longitude) {
+    public Optional<LocationView> getWeather(Double latitude, Double longitude) {
         try {
             LocationView locs = objectMapper.readValue(
                     httpOpenAPIClient.findLocationByLL(latitude, longitude),
                     LocationView.class
             );
 
-            return locs;
+            return Optional.of(locs);
         } catch (Exception ex) {
-            return null;
+            return Optional.empty();
         }
     }
 
@@ -66,11 +66,14 @@ public class WeatherService {
         return userLocs;
     }
 
-    public void saveLocToUser(String username, int locId) throws UsernameNotFoundException {
+    public void saveLocToUser(String username, LocationDTO locationDTO) throws UsernameNotFoundException {
         User user = userRepository.findByUsername(username)
                 .orElseThrow(() -> new UsernameNotFoundException("User not found"));
-        Location location = locationRepository.findById(locId)
-                .orElseThrow(() -> new NoSuchElementException("Location not found"));
+        Location location = locationRepository.findLocationByLatitudeAndLongitude(
+                locationDTO.getLatitude(),
+                locationDTO.getLongitude()
+                        )
+                .orElse(saveLocation(locationDTO));
         Set<Location> locs = user.getLocations();
         Set<User> users = location.getUsers();
 

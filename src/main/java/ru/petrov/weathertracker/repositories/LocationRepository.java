@@ -8,6 +8,7 @@ import java.util.Optional;
 
 public interface LocationRepository extends JpaRepository<Location, Integer> {
     Optional<Location> findByName(String name);
-    @Query("SELECT count(loc) > 0 FROM Location loc WHERE loc.latitude=?1 AND loc.longitude=?2")
-    boolean existsLocationByLatitudeAndLongitude(Double lat, Double lon);
+
+    @Query("SELECT loc FROM Location loc WHERE loc.latitude=?1 AND loc.longitude=?2")
+    Optional<Location> findLocationByLatitudeAndLongitude(Double lat, Double lon);
 }

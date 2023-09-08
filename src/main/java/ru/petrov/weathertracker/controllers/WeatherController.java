@@ -43,7 +43,8 @@ public class WeatherController {
         if (city == null) {
             locations = weatherService.findUserLocs(principal.getName()).stream()
                     .map((loc) -> {
-                        LocationView view = weatherService.getWeather(loc.getLatitude(), loc.getLongitude());
+                        LocationView view = weatherService.getWeather(loc.getLatitude(), loc.getLongitude())
+                                .orElseThrow(InternalError::new);
                         view.setId(loc.getId());
                         return view;
                     })
@@ -51,21 +52,6 @@ public class WeatherController {
         } else {
             locationsFound = weatherService.findLocations(city);
         }
-
-        locations.add(new LocationView(
-                1,
-                new ArrayList<Weather>(){{add(new Weather("Clouds"));}},
-                new Main(25.0),
-                new Wind(3.25),
-                "Moscow"
-        ));
-        locations.add(new LocationView(
-                2,
-                new ArrayList<Weather>(){{add(new Weather("Clouds"));}},
-                new Main(25.0),
-                new Wind(3.25),
-                "Moscow"
-        ));
 
         model.addAttribute("locations", locations);
         model.addAttribute("username", principal.getName());
@@ -77,10 +63,8 @@ public class WeatherController {
     }
 
     @PostMapping("/add-loc")
-    public String addLocation(Double latitude, Double longitude, Principal principal) {
-        System.out.println(latitude);
-        System.out.println(longitude);
-        //weatherService.saveLocToUser(principal.getName(), locId);
+    public String addLocation(LocationDTO location, Principal principal) {
+        weatherService.saveLocToUser(principal.getName(), location);
 
         return "redirect:/main";
     }
