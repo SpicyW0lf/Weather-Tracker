@@ -46,9 +46,10 @@
                 <p class="card-text"><i>Температура: </i> <span th:text="${location.getMain().getTemp()}"></span></p>
                 <p class="card-text"><i>Скорость ветра: </i> <span th:text="${location.getWind().getSpeed()}"></span>
                     м.с.</p>
-                <a th:href="@{/delete-loc/{locId}(locId=${location.getId()})}">
-                    <button class="btn btn-success">Удалить локацию</button>
-                </a>
+                <form th:action="@{/delete-loc}" th:method="delete">
+                    <input hidden type="text" th:value="${location.getId()}" name="id">
+                    <input type="submit" class="btn btn-success" value="Удалить локацию">
+                </form>
             </div>
         </div>
     </div>

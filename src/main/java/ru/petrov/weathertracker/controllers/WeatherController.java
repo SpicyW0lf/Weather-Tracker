@@ -27,14 +27,6 @@ public class WeatherController {
 
     private final WeatherService weatherService;
 
-    @GetMapping("/locations-all")
-    @ResponseBody
-    public ResponseEntity<Set<LocationDTO>> getLocations(@RequestParam String name) throws URISyntaxException, IOException, InterruptedException {
-        Set<LocationDTO> locations = weatherService.findLocations(name);
-
-        return new ResponseEntity<>(locations, HttpStatus.OK);
-    }
-
     @GetMapping("/main")
     public String mainPage(Principal principal, Model model, @RequestParam(required = false) String city) throws URISyntaxException, IOException, InterruptedException {
         Set<LocationDTO> locationsFound = new HashSet<>();
@@ -69,10 +61,10 @@ public class WeatherController {
         return "redirect:/main";
     }
 
-    @PostMapping("/locations")
-    public String saveLocation(@RequestBody LocationDTO location) {
-        weatherService.saveLocation(location);
+    @DeleteMapping("/delete-loc")
+    public String deleteLocation(int id, Principal principal) {
+        weatherService.deleteLocation(id, principal.getName());
 
-        return "redirect:/user-locations";
+        return "redirect:/main";
     }
 }

@@ -85,4 +85,25 @@ public class WeatherService {
         userRepository.save(user);
         locationRepository.save(location);
     }
+
+    public void deleteLocation(int id, String username) {
+        User user = userRepository.findByUsername(username)
+                .orElseThrow(() -> new UsernameNotFoundException("User not found"));
+        Location location = locationRepository.findById(id)
+                .orElseThrow(RuntimeException::new);
+        Set<Location> locs = user.getLocations();
+        Set<User> users = location.getUsers();
+        System.out.println(locs);
+        locs.remove(location);
+        System.out.println(locs);
+        users.remove(user);
+        user.setLocations(locs);
+
+        if (users.size() == 0) {
+            locationRepository.delete(location);
+        } else {
+            location.setUsers(users);
+            locationRepository.save(location);
+        }
+    }
 }
