@@ -75,9 +75,8 @@ public class WeatherService {
                 .orElseThrow(() -> new UsernameNotFoundException("User not found"));
         Location location = locationRepository.findLocationByLatitudeAndLongitude(
                 locationDTO.getLatitude(),
-                locationDTO.getLongitude()
-                        )
-                .orElse(saveLocation(locationDTO));
+                locationDTO.getLongitude())
+                .orElseGet(() -> saveLocation(locationDTO));
         Set<Location> locs = user.getLocations();
         Set<User> users = location.getUsers();
 
@@ -85,9 +84,8 @@ public class WeatherService {
         users.add(user);
         user.setLocations(locs);
         location.setUsers(users);
-
         userRepository.save(user);
-        locationRepository.save(location);
+        //locationRepository.save(location);
     }
 
     public void deleteLocation(int id, String username) {

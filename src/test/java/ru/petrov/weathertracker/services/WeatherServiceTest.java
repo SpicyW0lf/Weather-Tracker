@@ -182,5 +182,6 @@ class WeatherServiceTest {
                 .getLocations()
                 .size()
         );
+        assertEquals(1, locationRepository.findByName("pov").get().getUsers().size());
     }
 }
