@@ -2,7 +2,11 @@ package ru.petrov.weathertracker.services;
 
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 import ru.petrov.weathertracker.DTO.LocationDTO;
@@ -19,7 +23,7 @@ import java.util.*;
 import java.util.stream.Collectors;
 
 @Service
-@RequiredArgsConstructor
+@AllArgsConstructor
 public class WeatherService {
 
     private final ObjectMapper objectMapper = new ObjectMapper();
@@ -93,9 +97,7 @@ public class WeatherService {
                 .orElseThrow(RuntimeException::new);
         Set<Location> locs = user.getLocations();
         Set<User> users = location.getUsers();
-        System.out.println(locs);
         locs.remove(location);
-        System.out.println(locs);
         users.remove(user);
         user.setLocations(locs);
 

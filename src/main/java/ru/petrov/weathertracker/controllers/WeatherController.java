@@ -1,22 +1,16 @@
 package ru.petrov.weathertracker.controllers;
 
 import lombok.AllArgsConstructor;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 import ru.petrov.weathertracker.DTO.LocationDTO;
 import ru.petrov.weathertracker.DTO.weatherView.LocationView;
-import ru.petrov.weathertracker.DTO.weatherView.Main;
-import ru.petrov.weathertracker.DTO.weatherView.Weather;
-import ru.petrov.weathertracker.DTO.weatherView.Wind;
 import ru.petrov.weathertracker.services.WeatherService;
 
 import java.io.IOException;
 import java.net.URISyntaxException;
 import java.security.Principal;
-import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.Set;
 import java.util.stream.Collectors;
@@ -28,7 +22,11 @@ public class WeatherController {
     private final WeatherService weatherService;
 
     @GetMapping("/main")
-    public String mainPage(Principal principal, Model model, @RequestParam(required = false) String city) throws URISyntaxException, IOException, InterruptedException {
+    public String mainPage(
+            Principal principal,
+            Model model,
+            @RequestParam(required = false) String city
+    ) throws URISyntaxException, IOException, InterruptedException {
         Set<LocationDTO> locationsFound = new HashSet<>();
         Set<LocationView> locations = new HashSet<>();
 
