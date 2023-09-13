@@ -95,15 +95,18 @@ public class WeatherService {
                 .orElseThrow(RuntimeException::new);
         Set<Location> locs = user.getLocations();
         Set<User> users = location.getUsers();
-        locs.remove(location);
-        users.remove(user);
+        locs.removeIf((loc) -> loc.getId().equals(location.getId()));
+        users.removeIf((us) -> us.getId().equals(user.getId()));
         user.setLocations(locs);
 
         if (users.size() == 0) {
-            locationRepository.delete(location);
+            locationRepository.deleteById(location.getId());
         } else {
             location.setUsers(users);
-            locationRepository.save(location);
+            //locationRepository.save(location);
         }
+        //userRepository.save(user);
+        locationRepository.flush();
+        userRepository.flush();
     }
 }

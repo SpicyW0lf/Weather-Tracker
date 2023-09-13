@@ -184,4 +184,36 @@ class WeatherServiceTest {
         );
         assertEquals(1, locationRepository.findByName("pov").get().getUsers().size());
     }
+
+    @Test
+    void saveLocToUser_withGoodUsernameAndExistLoc_shoulSaveLoc() {
+        userRepository.save(new User("Doma", "doma"));
+        locationRepository.save(new Location("mos", 1.1, 2.2, "ru"));
+
+        weatherService.saveLocToUser("Doma", new LocationDTO(null, "mos", 1.1, 2.2, "ru"));
+
+        assertEquals(1, userRepository.findByUsername("Doma").get().getLocations().size());
+    }
+
+    @Test
+    void deleteLocation_withWrongUsername_shouldThrowException() {
+        userRepository.save(new User("Dima", "Doma"));
+
+        assertThrows(UsernameNotFoundException.class, () -> weatherService.deleteLocation(2, "Dama"));
+    }
+
+    @Test
+    void deleteLocation_withOneLoc_shouldDeleteLocFromTwoTables() {
+        User user = userRepository.save(new User("Dima", "Doma"));
+        Location loc = locationRepository.save(new Location("rol", 1.1, 2.2, "ru"));
+        user.getLocations().add(loc);
+        loc.getUsers().add(user);
+        userRepository.flush();
+        locationRepository.flush();
+
+        weatherService.deleteLocation(loc.getId(), "Dima");
+
+        assertEquals(0, userRepository.findByUsername("Dima").get().getLocations().size());
+        assertTrue(locationRepository.findLocationByLatitudeAndLongitude(1.1, 2.2).isEmpty());
+    }
 }
