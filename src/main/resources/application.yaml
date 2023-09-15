@@ -28,6 +28,7 @@ server:
   servlet:
     session:
       timeout: 30m
+  port: 8081
 
 weather:
   key: c97f5466a2850d170357a338b0f1809a
