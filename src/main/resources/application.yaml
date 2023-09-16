@@ -19,7 +19,7 @@ spring:
       table-name: spring_session
       initialize-schema: always
   datasource:
-    url: jdbc:postgresql://localhost:5432/Weather
+    url: jdbc:postgresql://postgres:5432/Weather
     username: postgres
     password: 12314
     driver-class-name: org.postgresql.Driver
