@@ -3,7 +3,7 @@
 ## Стэк:
 
 Spring Boot 3.1.2, Spring Security, Spring Session, Spring Data JPA, PostgreSQL, Maven, Jackson, 
-JUnit, Testcontainers, Docker, Docker compose
+Thymeleaf, JUnit, Testcontainers, Docker, Docker compose
 
 ## Описание:
 
